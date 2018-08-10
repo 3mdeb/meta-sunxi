@@ -19,7 +19,7 @@ index 700416e..51481c9 100644
  
  test: ../config.mk test.c
 -	$(CC) $(CFLAGS) -o $@ test.c -lEGL -lGLESv2
-+	$(CC) $(CFLAGS) -I../../image/usr/include -L../../image/usr/lib -o $@ test.c -lEGL -lGLESv2 -lx11
++	$(CC) $(CFLAGS) -I../../image/usr/include -L../../image/usr/lib -o $@ test.c -lEGL -lGLESv2
  
  clean:
  	rm -f test
