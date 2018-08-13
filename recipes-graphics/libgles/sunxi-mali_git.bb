@@ -91,6 +91,7 @@ do_install() {
 PACKAGES =+ "${PN}-test"
 
 RPROVIDES_${PN} += "libGLESv2.so libEGL.so libGLESv2.so libGLESv1_CM.so libMali.so"
+RPROVIDES_${PN} += "libgles1 libgles2 libegl"
 RDEPENDS_${PN}-test = "${PN}"
 
 FILES_${PN} += "${libdir}/lib*.so"
