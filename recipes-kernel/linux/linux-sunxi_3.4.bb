@@ -2,7 +2,7 @@ require linux.inc
 
 DESCRIPTION = "Linux kernel for Allwinner a10/a20 processors"
 
-COMPATIBLE_MACHINE = "(sun4i|sun5i|sun7i)"
+COMPATIBLE_MACHINE = "(sun4i|sun5i|sun7i|sun8i)"
 RDEPENDS_${PN} += "sunxi-board-fex"
 
 PV = "3.4.104"

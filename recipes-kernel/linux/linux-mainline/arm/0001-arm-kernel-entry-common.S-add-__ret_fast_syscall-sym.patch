@@ -1,0 +1,58 @@
+From 32cafe75622d8d6d9842839a18a037a2702765dd Mon Sep 17 00:00:00 2001
+From: Maciej Pijanowski <maciej.pijanowski@3mdeb.com>
+Date: Tue, 31 Jul 2018 18:05:58 +0200
+Subject: [PATCH] arm/kernel/entry-common.S: add __ret_fast_syscall symbol
+
+Signed-off-by: Maciej Pijanowski <maciej.pijanowski@3mdeb.com>
+
+When building the kernel as Thumb-2 with binutils 2.29 or newer, if the
+assembler has seen the .type directive (via ENDPROC()) for a symbol, it
+automatically handles the setting of the lowest bit when the symbol is
+used with ADR.  The badr macro on the other hand handles this lowest bit
+manually.  This leads to a jump to a wrong address in the wrong state
+in the syscall return path:
+
+The result was kernel Oops like:
+ Internal error: Oops - undefined instruction: 0 [#2] SMP THUMB2
+
+Patch based on: https://www.spinics.net/lists/arm-kernel/msg664207.html
+
+See also bug explanation on:
+https://lists.yoctoproject.org/pipermail/yocto/2018-April/040608.html
+https://patchwork.kernel.org/patch/10072695/
+
+---
+ arch/arm/kernel/entry-common.S | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/kernel/entry-common.S b/arch/arm/kernel/entry-common.S
+index 3c4f88701f22..c94614f20b11 100644
+--- a/arch/arm/kernel/entry-common.S
++++ b/arch/arm/kernel/entry-common.S
+@@ -47,6 +47,7 @@ saved_pc	.req	lr
+  * features make this path too inefficient.
+  */
+ ret_fast_syscall:
++__ret_fast_syscall:
+  UNWIND(.fnstart	)
+  UNWIND(.cantunwind	)
+ 	disable_irq_notrace			@ disable interrupts
+@@ -76,6 +77,7 @@ fast_work_pending:
+  * r0 first to avoid needing to save registers around each C function call.
+  */
+ ret_fast_syscall:
++__ret_fast_syscall:
+  UNWIND(.fnstart	)
+  UNWIND(.cantunwind	)
+ 	str	r0, [sp, #S_R0 + S_OFF]!	@ save returned r0
+@@ -243,7 +245,7 @@ local_restart:
+ 	bne	__sys_trace
+ 
+ 	cmp	scno, #NR_syscalls		@ check upper syscall limit
+-	badr	lr, ret_fast_syscall		@ return address
++	badr	lr, __ret_fast_syscall		@ return address
+ 	ldrcc	pc, [tbl, scno, lsl #2]		@ call sys_* routine
+ 
+ 	add	r1, sp, #S_OFF
+-- 
+2.7.4
