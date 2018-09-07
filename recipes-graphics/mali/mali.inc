@@ -10,7 +10,6 @@ SRC_URI = " \
     file://glesv1_cm.pc \
     file://glesv1.pc \
     file://glesv2.pc \
-    file://gbm.pc \
     "
 
 S = "${WORKDIR}/git"
@@ -38,7 +37,7 @@ RDEPENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_RDEPEND
 RDEPENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'directfb', '${DFB_RDEPENDS}', '', d)}"
 
 PROVIDES += "${@bb.utils.contains('DISTRO_FEATURES', 'opengl', 'virtual/egl virtual/libgles1 virtual/libgles2', '', d)}"
-PROVIDES += "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'virtual/libwayland-egl virtual/libgbm', '', d)}"
+PROVIDES += "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'virtual/libwayland-egl', '', d)}"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
@@ -48,9 +47,9 @@ do_compile[noexec] = "1"
 FILES_SOLIBSDEV_remove = " libMali.so"
 FILES_${PN} += "${libdir}/libMali.so"
 
-RREPLACES_${PN} = "libegl libegl1 libgles1 libgles2 libgbm"
-RPROVIDES_${PN} = "libegl libegl1 libgles1 libgles2 libgbm"
-RCONFLICTS_${PN} = "libegl libegl1 libgles1 libgles2 libgbm"
+RREPLACES_${PN} = "libegl libegl1 libgles1 libgles2"
+RPROVIDES_${PN} = "libegl libegl1 libgles1 libgles2"
+RCONFLICTS_${PN} = "libegl libegl1 libgles1 libgles2"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 PACKAGES = "${PN} ${PN}-dev"

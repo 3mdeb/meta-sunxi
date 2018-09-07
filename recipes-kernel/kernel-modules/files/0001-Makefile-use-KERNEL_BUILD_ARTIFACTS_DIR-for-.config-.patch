@@ -1,0 +1,27 @@
+From 85136deafb2ab31ebf3473dff2cd1006a833dde9 Mon Sep 17 00:00:00 2001
+From: Maciej Pijanowski <maciej.pijanowski@3mdeb.com>
+Date: Thu, 6 Sep 2018 15:02:01 +0200
+Subject: [PATCH] Makefile: use KERNEL_BUILD_ARTIFACTS_DIR for .config file
+ location
+
+Signed-off-by: Maciej Pijanowski <maciej.pijanowski@3mdeb.com>
+---
+ Makefile | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/Makefile b/Makefile
+index c3790a08b28c..0ee82329218b 100755
+--- a/Makefile
++++ b/Makefile
+@@ -88,7 +88,7 @@ endif
+ # Define host system directory
+ KDIR-$(shell uname -m):=/lib/modules/$(shell uname -r)/build
+ 
+-include $(KDIR)/.config
++include $(KERNEL_BUILD_ARTIFACTS_DIR)/.config
+ 
+ ifeq ($(ARCH), arm)
+ # when compiling for ARM we're cross compiling
+-- 
+2.7.4
+
