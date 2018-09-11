@@ -7,11 +7,14 @@ do_install() {
     install -d -m 0755 ${D}${includedir}/EGL
     install -m 0644 ${S}/include/${MALI_EGL_TYPE}/EGL/*.h ${D}${includedir}/EGL/
     install -d -m 0755 ${D}${includedir}/GLES
-    install -m 0755 ${S}/include/${MALI_EGL_TYPE}/GLES/*.h ${D}${includedir}/GLES/
+    install -m 0644 ${S}/include/${MALI_EGL_TYPE}/GLES/*.h ${D}${includedir}/GLES/
     install -d -m 0755 ${D}${includedir}/GLES2/
-    install -m 0755 ${S}/include/${MALI_EGL_TYPE}/GLES2/*.h ${D}${includedir}/GLES2/
+    install -m 0644 ${S}/include/${MALI_EGL_TYPE}/GLES2/*.h ${D}${includedir}/GLES2/
     install -d -m 0755 ${D}${includedir}/KHR
-    install -m 0755 ${S}/include/${MALI_EGL_TYPE}/KHR/*.h ${D}${includedir}/KHR/
+    install -m 0644 ${S}/include/${MALI_EGL_TYPE}/KHR/*.h ${D}${includedir}/KHR/
+    if [ "${MALI_EGL_TYPE}" = "wayland" ]; then
+      install -m 0644 ${S}/include/${MALI_EGL_TYPE}/gbm.h ${D}${includedir}/
+    fi
 
     # install pkgconfig files
     install -d -m 0755 ${D}${libdir}/pkgconfig
@@ -21,6 +24,7 @@ do_install() {
     install -m 0644 ${WORKDIR}/glesv1_cm.pc ${D}${libdir}/pkgconfig/
     if [ "${MALI_EGL_TYPE}" = "wayland" ]; then
       install -m 0644 ${WORKDIR}/wayland-egl.pc ${D}${libdir}/pkgconfig/
+      install -m 0644 ${WORKDIR}/gbm.pc ${D}${libdir}/pkgconfig/
     fi
 
     # install Mali library

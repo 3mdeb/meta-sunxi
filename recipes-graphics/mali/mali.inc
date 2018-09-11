@@ -4,12 +4,13 @@ LICENSE = "Proprietary"
 LIC_FILES_CHKSUM = "file://${S}/EULA%20for%20Mali%20400MP%20_AW.pdf;md5=495406406519c27072a3e6f1e825c0a8"
 
 SRC_URI = " \
-    git://github.com/3mdeb/mali-blobs.git;protocol=https;branch=wayland \
+    git://github.com/3mdeb/mali-blobs.git;protocol=https;branch=wayland_includes \
     file://egl.pc \
     file://wayland-egl.pc \
     file://glesv1_cm.pc \
     file://glesv1.pc \
     file://glesv2.pc \
+    file://gbm.pc \
     "
 
 S = "${WORKDIR}/git"
@@ -37,19 +38,34 @@ RDEPENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'x11', '${X11_RDEPEND
 RDEPENDS_${PN} += "${@bb.utils.contains('DISTRO_FEATURES', 'directfb', '${DFB_RDEPENDS}', '', d)}"
 
 PROVIDES += "${@bb.utils.contains('DISTRO_FEATURES', 'opengl', 'virtual/egl virtual/libgles1 virtual/libgles2', '', d)}"
-PROVIDES += "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'virtual/libwayland-egl', '', d)}"
+PROVIDES += "${@bb.utils.contains('DISTRO_FEATURES', 'wayland', 'virtual/libwayland-egl virtual/libgbm', '', d)}"
 
 do_configure[noexec] = "1"
 do_compile[noexec] = "1"
 
 # Shared libMali object is not version and we need to ship the .so object into
 # the runtime package
-FILES_SOLIBSDEV_remove = " libMali.so"
-FILES_${PN} += "${libdir}/libMali.so"
+FILES_SOLIBSDEV_remove = " \
+    libMali.so \
+    libEGL.so \
+    libgbm.so \
+    libGLESv1_CM.so \
+    libGLESv2.so \
+    libwayland-egl.so \
+    "
 
-RREPLACES_${PN} = "libegl libegl1 libgles1 libgles2"
-RPROVIDES_${PN} = "libegl libegl1 libgles1 libgles2"
-RCONFLICTS_${PN} = "libegl libegl1 libgles1 libgles2"
+FILES_${PN} += "${libdir}/libMali.so \
+    ${libdir}/libEGL.so \
+    ${libdir}/libgbm.so \
+    ${libdir}/libGLESv1_CM.so \
+    ${libdir}/libGLESv2.so \
+    ${libdir}/libwayland-egl.so \
+    "
+
+
+RREPLACES_${PN} = "libegl libegl1 libgles1 libgles2 libgbm"
+RPROVIDES_${PN} = "libegl libegl1 libgles1 libgles2 libgbm"
+RCONFLICTS_${PN} = "libegl libegl1 libgles1 libgles2 libgbm"
 
 PACKAGE_ARCH = "${MACHINE_ARCH}"
 PACKAGES = "${PN} ${PN}-dev"
